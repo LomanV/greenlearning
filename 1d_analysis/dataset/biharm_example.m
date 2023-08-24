@@ -124,7 +124,7 @@ end
 function pwlf = rand_pwl(n, dom)
     % Generates a random continuous piecewise linear function of n pieces
     % with uniformly sampled nodes
-    % with slopes sampled from gaussian distribution
+    % with slopes sampled from Gaussian distribution
     
     % Define the range of the function as dom and sample n+1 points uniformly
     % in the domain
@@ -132,7 +132,7 @@ function pwlf = rand_pwl(n, dom)
     x = sort(x);
     
     % Generate random coefficients for the function
-    sigma = 3;
+    sigma = 0;
     mu = 2;
     a = sigma*(randn(1,n)+mu);
     
@@ -156,7 +156,7 @@ end
 
 
 function f = rand_sin(dom)
-    % Generate a random function sampled as an average of sine functions with gaussian weights
+    % Generate a random function sampled as an average of sine functions with Gaussian weights
 
     n_el = 10;
     mu = 0;
@@ -172,7 +172,7 @@ function f = rand_sin(dom)
 end
 
 function f = rand_cheb(dom)
-    % Generate a random function sampled as an average of Chebyshev polynomials with gaussian weights
+    % Generate a random function sampled as an average of Chebyshev polynomials with Gaussian weights
     
     n_el = 10;
     mu = 0;
