@@ -1,4 +1,5 @@
 from ../utils/utils import trapezoidal
+from eval_set2d import eval_set2d
 
 import torch
 import numpy as np
@@ -25,7 +26,7 @@ def predict2d(f):
     weights_f = weights_f
 
     # Getting the evaluation points for G to perform the convolution
-    eval_G, eval_N = eval_set(fx, 'cpu')
+    eval_G, eval_N = eval_set2d(fx, 'cpu')
 
     # Performing the convolution
     f_weights = weights_f*f
