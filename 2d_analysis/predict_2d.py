@@ -4,14 +4,13 @@ from eval_set2d import eval_set2d
 import torch
 import numpy as np
 
-def predict2d(f):
+def predict2d(f, fx):
     """
     Computes the solution u from the estimated Green's function for a given set of forcings f in 2d
     Makes direct use of Fubini's theorem
     """
 
     Nf      = int(np.sqrt(f.shape[0]))
-    fx      = np.linspace(0,1,Nf)
     Nsample = 100
 
     # Computing the weights for the trapezoidal integral G(x,y,s,t)*f(s,t)
