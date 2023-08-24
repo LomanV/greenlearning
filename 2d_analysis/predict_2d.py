@@ -33,4 +33,3 @@ def predict2d(f, fx):
     integral  = torch.matmul(torch.transpose(torch.reshape(G_output, (Nf*Nf, -1)), 0, 1), f_weights[:,:])
   
     return integral + U_hom(eval_N)
-    return integral + U_hom(eval_N)
