@@ -28,7 +28,7 @@ u_train, u_test, f_train, f_test, x, y = load_data(filename, 'cpu', '1d')
 with trange(n_epochs, unit='epochs') as pbar:
     for epoch in pbar:
 
-        G_output = G(training_G)
+        G_output = G(eval_G)
         N_output = U_hom(x)
 
         optimizer.zero_grad()
