@@ -1,4 +1,4 @@
-from utils import trapezoidal
+from ../utils/utils import trapezoidal
 
 import torch
 import torch.nn as nn
