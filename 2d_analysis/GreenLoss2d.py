@@ -1,7 +1,12 @@
-class CustomLoss2d(nn.Module):
+from ../utils/utils import trapezoidal
+
+import torch
+import torch.nn as nn
+
+class GreenLoss2d(nn.Module):
 
     def __init__(self):
-        super(CustomLoss2d, self).__init__()
+        super(GreenLoss2d, self).__init__()
 
     def forward(self, G_output, N_output, u, f):
         return self.loss_call(G_output, N_output, u, f)
@@ -9,6 +14,7 @@ class CustomLoss2d(nn.Module):
     def loss_call(self, G_output, N_output, u, f):
 
         Nsample = 100
+        # Nf and Nu are always equal with the data used, they might have to be changed to 40 depending on the grid size
         Nf = 20
         Nu = 20
 
