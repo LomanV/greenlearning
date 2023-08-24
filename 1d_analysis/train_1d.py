@@ -4,6 +4,10 @@ from GreenLoss1d import GreenLoss1d
 from eval_set1d import eval_set1d
 
 import torch
+import numpy as np
+from tqdm import tqdm, trange
+import torch.optim as optim
+import copy
 
 n_epochs  = 10**4
 G     = Net(2, 1, 4, 50)
@@ -33,8 +37,12 @@ with trange(n_epochs, unit='epochs') as pbar:
         loss.backward()
         optimizer.step()
 
+        if best_loss > loss.item():
+            best_G = copy.deepcopy(G)
+            best_U = copy.deepcopy(U_hom)
+            torch.save(best_G, "/G.pkl")
+            torch.save(best_U, "/U_hom.pkl")
+            best_loss = loss.item()
+
         if (epoch + 1) % 10 == 0:
                 pbar.set_postfix(loss=loss.item())
-
-torch.save(G.state_dict(), 'G.pth')
-torch.save(U_hom.state_dict(), 'U_hom.pth')
