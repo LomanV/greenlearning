@@ -33,10 +33,11 @@ with trange(n_epochs, unit='epochs') as pbar:
 
         optimizer.zero_grad()
 
-        loss = loss_func.loss_call(G_output, N_output, u, f)
+        loss = loss_func.loss_call(G_output, N_output, u, f, x, y)
         loss.backward()
         optimizer.step()
 
+        # Saving the best performing models
         if best_loss > loss.item():
             best_G = copy.deepcopy(G)
             best_U = copy.deepcopy(U_hom)
