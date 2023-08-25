@@ -1,5 +1,6 @@
 from ../utils/utils import Net
 from ../utils/utils import init_weights
+from ../utils/utils import load_data
 from GreenLossTime import GreenLossTime
 from eval_set_time import eval_set_time
 
