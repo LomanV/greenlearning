@@ -1,4 +1,5 @@
 from ../utils/network import Net
+from ../utils/utils import init_weights
 from ../utils/utils import load_data
 from GreenLoss1d import GreenLoss1d
 from eval_set1d import eval_set1d
