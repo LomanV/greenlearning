@@ -1,6 +1,7 @@
 from ../utils/utils import Net
 from ../utils/utils import init_weights
 from GreenLossTime import GreenLossTime
+from eval_set_time import eval_set_time
 
 import torch
 import torch.nn as nn
@@ -19,10 +20,13 @@ optimizer = optim.Adam(G.parameters(), lr=0.001)
 
 history = np.zeros(n_epochs)
 best_loss = 100
+
+eval_G = eval_set_time(fx, device)
+
 with trange(n_epochs, unit='epochs') as pbar:
     for epoch in pbar:
 
-        G_output = G(training_G)
+        G_output = G(eval_G)
 
         optimizer.zero_grad()
 
