@@ -7,12 +7,6 @@ function biharm_example(varargin)
     % Definition of domain
     dom = [0,3];
 
-    % Evaluation points for G
-    NGx = 1000;
-    NGy = 1000;
-    XG = linspace(dom(1), dom(2), NGx)';
-    YG = linspace(dom(1), dom(2), NGy)';
-
     % Number of sampled functions f
     Nsample = 100;
 
@@ -54,7 +48,7 @@ function biharm_example(varargin)
     % Add Gaussian noise to the solution
     U = U.*(1 + noise_level*randn(size(U)));
 
-    save(sprintf('biharm_pwl.mat'),"X","Y","U","F","U_hom","XG","YG")
+    save(sprintf('biharm_pwl.mat'),"X","Y","U","F","U_hom")
 end
 
 function u = biharmonic_fd1d(n, f_v, dom)
