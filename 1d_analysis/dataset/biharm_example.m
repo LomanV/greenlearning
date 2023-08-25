@@ -168,7 +168,7 @@ function f = rand_sin(dom)
     for i = 1:n_el
         f = f + chebfun(@(x)w(i)*sin(freq(i)*x), dom);
     end
-    f = f/n_el
+    f = 1/n_el*f;
 end
 
 function f = rand_cheb(dom)
@@ -183,7 +183,7 @@ function f = rand_cheb(dom)
     for i = 1:n_el
         f = f + w(i)*chebpoly(i, dom);
     end
-    f = f/n_el
+    f = 1/n_el*f;
 end
 
 function f = rand_gaus(dom, lambda)
