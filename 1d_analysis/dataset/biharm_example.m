@@ -126,8 +126,8 @@ function pwlf = rand_pwl(n, dom)
     x = sort(x);
     
     % Generate random coefficients for the function
-    sigma = 0;
-    mu = 2;
+    sigma = 2;
+    mu = 0;
     a = sigma*(randn(1,n)+mu);
     
     % Initialize the piecewise linear function
