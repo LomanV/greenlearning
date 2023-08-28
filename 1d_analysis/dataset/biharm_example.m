@@ -7,6 +7,10 @@ function biharm_example(varargin)
     % Definition of domain
     dom = [0,3];
 
+    
+    % forcing type
+    forcing = "pwl"; % choose from cheb sine pwl gaus
+
     % Number of sampled functions f
     Nsample = 100;
 
@@ -30,7 +34,17 @@ function biharm_example(varargin)
     F = zeros(Nf, Nsample, 1);
 
     for i = 1:Nsample
-        f = rand_pwl(4, dom);
+        % Sample the forcing term
+        if strcmp(forcing, 'pwl')
+            f = rand_pwl(4, dom);
+        elseif strcmp(forcing, 'sine')
+            f = rand_sin(dom);
+        elseif strcmp(forcing, 'cheb')
+            f = rand_cheb(dom);
+        elseif strcmp(forcing, 'gaus')
+            f = rand_gaus(dom, 0.03);
+        end
+        
         x = linspace(dom(1), dom(2), n);
         x = x';
         f_v = f(x);
@@ -48,7 +62,7 @@ function biharm_example(varargin)
     % Add Gaussian noise to the solution
     U = U.*(1 + noise_level*randn(size(U)));
 
-    save(sprintf('biharm_pwl.mat'),"X","Y","U","F","U_hom")
+    save(sprintf('biharm_" + forcing + ".mat'),"X","Y","U","F","U_hom")
 end
 
 function u = biharmonic_fd1d(n, f_v, dom)
