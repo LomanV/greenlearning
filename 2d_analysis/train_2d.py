@@ -29,6 +29,7 @@ params = list(G.parameters()) + list(U_hom.parameters())
 optimizer = optim.Adam(params, lr=0.001)
 
 # Save loss profile and best model
+n_epochs  = 10**4 # might need up to 10**5 for biharmonic
 history = np.zeros(n_epochs)
 best_loss = 100
 
@@ -40,7 +41,6 @@ filename = "dataset/" + eq + "_2d_" + forcing + ".mat"
 u_train, u_test, f_train, f_test, fx = load_data(filename, device, '2d')
 eval_G = eval_set2d(fx, device)
 
-n_epochs  = 10**5 # might need up to 10**5 for biharmonic
 with trange(n_epochs, unit='epochs') as pbar:
     for epoch in pbar:
 
