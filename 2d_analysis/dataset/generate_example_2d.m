@@ -73,7 +73,7 @@ function generate_example_2d(varargin)
     % Add Gaussian noise to the training solution
     U = U.*(1 + noise_level*randn(size(U)));
 
-    save(sprintf(eq + '_2d_' + forcing + points + '.mat'), "fX", "U", "F", "U_hom")
+    save(sprintf(eq + '_2d_' + forcing + '.mat'), "fX", "U", "F", "U_hom")
 end
 
 function u = fd2d(n, f_v, dom, eq)
