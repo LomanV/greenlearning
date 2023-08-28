@@ -8,7 +8,7 @@ function poisson_example(varargin)
     dom = [0,1];
 
     % Number of sampled functions f
-    Nsample = 100;
+    Nsample = 200;
 
     % Noise level of the solutions u
     noise_level = 0;
@@ -153,7 +153,7 @@ function f = rand_sin(dom)
     for i = 1:n_el
         f = f + chebfun(@(x)w(i)*sin(i*x), dom);
     end
-    f = f/n_el
+    f = 1/n_el*f;
 end
 
 function f = rand_cheb(dom)
@@ -168,7 +168,7 @@ function f = rand_cheb(dom)
     for i = 1:n_el
         f = f + w(i)*chebpoly(i, dom);
     end
-    f = f/n_el
+    f = 1/n_el*f;
 end
 
 function f = rand_gaus(dom, lambda)
