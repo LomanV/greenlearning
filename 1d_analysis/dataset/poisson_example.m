@@ -132,7 +132,7 @@ function pwlf = rand_pwl(n, dom)
     % Add each piece of the function to the overall function
     for i = 2:n-1
         pwlf = @(t) pwlf(t) + (a(i).*(t - x(i)) + incr(i-1)).*(t >= x(i) & t < x(i+1));
-end
+    end
 
 pwlf = @(t) pwlf(t) + (a(n).*(t - x(n)) + incr(n-1)).*(t >= x(n));
 end
