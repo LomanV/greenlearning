@@ -8,6 +8,11 @@ close all;
 clear all;
 
 % Initialization
+
+% Select forcing type and boundary condition type
+forcing  = 'pwl';  % choose from cheb sine pwl gaus
+boundary = 'space'; % either time or space for the boundary conditions
+
 Nx = 101;     
 dx = 1/(Nx-1);
 x(:,1) = (0:Nx-1)*dx;
@@ -25,8 +30,6 @@ c = v*(dt/dx);  % CFL condition
 dom = [0,1];
 Nsample = 200;
 
-boundary = 'time' % either time or space for the boundary conditions
-
 % Arrays to store the data
 U = zeros(101, 101, Nsample);
 F = zeros(101, Nsample);
@@ -36,19 +39,34 @@ for k=1:Nsample
     u = zeros(T,Nx);  % U(x,t) = U(space,time)
 
     % Sample the random forcing that determines the boundary conditions
-    f = rand_gaus(dom, 0.03);
+    if strcmp(forcing, 'pwl')
+        f = rand_pwl(4, dom);
+    elseif strcmp(forcing, 'sine')
+        f = rand_sine(dom);
+    elseif strcmp(forcing, 'cheb')
+        f = rand_cheb(dom);
+    elseif strcmp(forcing, 'gaus')
+        f = rand_gaus(dom, 0.03);
+    end
     
     % Initial condition
     if strcmp(boundary, 'time')
         u(:,1) = f(t);
         u(:,2) = f(t);
-    elseif strcmp(fboundary, 'space')
+
+        % For filename
+        bd = '_t';
+        
+    elseif strcmp(boundary, 'space')
         u(1, :) = f(x);
         u(2, 1) = u(1, 1) - (1/2)*c*c*(u(1, 2)-2*u(1, 1));
         u(2, end) = u(1, end) - (1/2)*c*c*(u(1, end-1)-2*u(1, end));
         for j=3:Nx-1
             u(2, j) = u(1, j) - (1/2)*c*c*(u(1, j+1)-2*u(1, j)+u(1, j-1));
         end
+
+        % For filename
+        bd = '_x';
     end
     
     % Finite Difference Scheme
@@ -75,7 +93,7 @@ fX = x;
 U = reshape(U, 101*101, Nsample);
 
 % We write the .mat file
-save(sprintf('wave_gaus_x.mat'),"U","F","fX")
+save(sprintf("wave_" + forcing + bd + ".mat"),"U","F","fX")
 
 function pwlf = rand_pwl(n, dom)
 % Generates a continuous piecewise linear function of n pieces
