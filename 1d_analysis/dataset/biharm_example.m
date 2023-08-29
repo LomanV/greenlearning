@@ -38,7 +38,7 @@ function biharm_example(varargin)
         if strcmp(forcing, 'pwl')
             f = rand_pwl(4, dom);
         elseif strcmp(forcing, 'sine')
-            f = rand_sin(dom);
+            f = rand_sine(dom);
         elseif strcmp(forcing, 'cheb')
             f = rand_cheb(dom);
         elseif strcmp(forcing, 'gaus')
@@ -163,18 +163,17 @@ function pwlf = rand_pwl(n, dom)
 end
 
 
-function f = rand_sin(dom)
+function f = rand_sine(dom)
     % Generate a random function sampled as an average of sine functions with Gaussian weights
 
     n_el = 10;
     mu = 0;
     sigma = 2;
     w = normrnd(mu, sigma, 1, n_el);
-    freq = datasample(1:n_el*3, n_el, 'Replace', false);
 
     f = chebfun(@(x)0, dom);
     for i = 1:n_el
-        f = f + chebfun(@(x)w(i)*sin(freq(i)*x), dom);
+        f = f + chebfun(@(x)w(i)*sin(i*x), dom);
     end
     f = 1/n_el*f;
 end
