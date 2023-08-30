@@ -1,7 +1,7 @@
 function biharm_example(varargin)
     % This file is based on the code of John Burkardt distributed under the GNU LGPL license and the one of Nicolas Boulle
     
-    % We solve the 1d biharmonic equation in domain dom with boundary conditions
+    % We solve the 1d biharmonic equation in domain dom with Dirichlet and Neumann boundary conditions
     % ul ur upl upr on the values of the solution and its first derivative on the left and right boubndary of dom
 
     % Definition of domain
