@@ -7,12 +7,11 @@ function biharm_example(varargin)
     % Definition of domain
     dom = [0,3];
 
-    
     % forcing type
     forcing = "pwl"; % choose from cheb sine pwl gaus
 
     % Number of sampled functions f
-    Nsample = 100;
+    Nsample = 200;
 
     % Noise level of the solutions u
     % If we wish to add noise to the boundary
