@@ -62,7 +62,7 @@ function biharm_example(varargin)
     % Add Gaussian noise to the solution
     U = U.*(1 + noise_level*randn(size(U)));
 
-    save(sprintf('biharm_" + forcing + ".mat'),"X","Y","U","F","U_hom")
+    save(sprintf("biharm_" + forcing + ".mat"),"X","Y","U","F","U_hom")
 end
 
 function u = biharmonic_fd1d(n, f_v, dom)
