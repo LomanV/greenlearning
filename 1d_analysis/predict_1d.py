@@ -1,15 +1,17 @@
-from evalset_1d import eval_set1d
-from ../utils/utils import trapezoidal
-
 import torch
+import numpy as np
+from scipy import integrate
 
-def predict_1d(f,x,y):
+def predict_1d(f, x, y, G, U_hom):
+    """
+    Computes the solution u from the estimated Green's function for a given forcing f
+    """
+    u_pred = np.zeros((100, 100))
+    for i in range(100):
+        x_rep = x[i].repeat(200, 1)
+        z = torch.cat((x_rep, y), dim=1)
+        prod = G(z)*f[:, :].reshape(200, 100)
+        integral = integrate.trapezoid(prod.detach().numpy(), y.detach().numpy(), axis=0)
+        u_pred[i, :] = integral + U_hom(x[i]).detach().numpy().repeat(100)
 
-    eval_G = eval_set1d(x,y)
-    G_output = G(eval_G)
-
-    w = torch.tensor(trapezoidal(y), dtype = torch.float32)
-    f_weights = torch.multiply(w, f)
-
-    integral = torch.matmul(torch.reshape(G_output, (Nu, Nf)), f_weights[:,:])
-    return integral.detach().numpy()
+    return u_pred
