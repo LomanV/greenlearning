@@ -56,7 +56,7 @@ function poisson_example(varargin)
     % Add Gaussian noise to the solution
     U = U.*(1 + noise_level*randn(size(U)));
 
-    save(sprintf('poisson_' + forcing + '_test.mat'),"X","Y","U","F","U_hom")
+    save(sprintf("poisson_" + forcing + "_test.mat"),"X","Y","U","F","U_hom")
 end
 
 function u = poisson_fd1d(n, f_v, dom)
