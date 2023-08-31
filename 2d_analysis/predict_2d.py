@@ -3,12 +3,13 @@ import sys
 sys.path.insert(1, '../utils')
 
 from utils import trapezoidal
+import settings
 from eval_set2d import eval_set2d
 
 import torch
 import numpy as np
 
-def predict2d(f, fx):
+def predict_2d(f, fx):
     """
     Computes the solution u from the estimated Green's function for a given set of forcings f in 2d
     Makes direct use of Fubini's theorem
@@ -33,7 +34,7 @@ def predict2d(f, fx):
 
     # Performing the convolution
     f_weights = weights_f*f
-    G_output  = G(eval_G)
+    G_output  = settings.G(eval_G)
     integral  = torch.matmul(torch.transpose(torch.reshape(G_output, (Nf*Nf, -1)), 0, 1), f_weights[:,:])
 
-    return integral + U_hom(eval_N)
+    return integral + settings.U_hom(eval_N)

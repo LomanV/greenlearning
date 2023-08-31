@@ -1,4 +1,7 @@
-from ../utils/utils import trapezoidal
+import sys
+sys.path.insert(1, '../utils')
+
+from utils import trapezoidal
 
 import torch
 import torch.nn as nn
