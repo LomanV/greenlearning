@@ -2,6 +2,7 @@ import scipy
 import scipy.io
 import numpy as np
 import torch
+import torch.nn as nn
 
 # Trapezoidal weights used for trapezoidal rule integration
 def trapezoidal(x):
@@ -32,3 +33,8 @@ def load_data(filename, device, type):
         return u_train, u_test, f_train, f_test, x, y
     else:
         return
+
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        torch.nn.init.xavier_uniform_(m.weight)
+        m.bias.data.fill_(0.01)
