@@ -52,11 +52,14 @@ with trange(n_epochs, unit='epochs') as pbar:
         loss = loss_func.loss_call(G_output, N_output, u_train, f_train)
         history[epoch] = loss.item()
 
+        # Saving the best performing models
         if best_loss > loss.item():
-            torch.save(G.state_dict(), 'G.pth')
-            torch.save(U_hom.state_dict(), 'U_hom.pth')
+            best_G = copy.deepcopy(G)
+            best_U = copy.deepcopy(U_hom)
+            torch.save(best_G, "/G.pkl")
+            torch.save(best_U, "/U_hom.pkl")
             best_loss = loss.item()
-
+            
         loss.backward()
         optimizer.step()
 
