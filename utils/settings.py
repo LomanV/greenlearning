@@ -9,5 +9,5 @@ def load_net(forcing):
     global G
     global U_hom
 
-    G     = torch.load("networks/G_" + forcing + ".pkl")
-    U_hom = torch.load("networks/U_hom_" + forcing + ".pkl")
+    G     = torch.load("networks/G_" + forcing + ".pkl", map_location=torch.device('cpu'))
+    U_hom = torch.load("networks/U_hom_" + forcing + ".pkl", map_location=torch.device('cpu'))
