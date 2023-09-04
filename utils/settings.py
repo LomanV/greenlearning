@@ -5,9 +5,9 @@ def init():
     global device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def load_net():
+def load_net(forcing):
     global G
     global U_hom
 
-    G     = torch.load("G.pkl")
-    U_hom = torch.load("U_hom.pkl")
+    G     = torch.load("networks/G_" + forcing + ".pkl")
+    U_hom = torch.load("networks/U_hom_" + forcing + ".pkl")
