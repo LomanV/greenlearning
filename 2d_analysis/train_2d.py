@@ -59,8 +59,8 @@ with trange(n_epochs, unit='epochs') as pbar:
         if best_loss > loss.item():
             best_G = copy.deepcopy(G)
             best_U = copy.deepcopy(U_hom)
-            torch.save(best_G, "G.pkl")
-            torch.save(best_U, "U_hom.pkl")
+            torch.save(best_G, "networks/" + eq + "/G_" + forcing + ".pkl")
+            torch.save(best_U, "networks/" + eq + "/U_hom_" + forcing + ".pkl")
             best_loss = loss.item()
 
         loss.backward()
