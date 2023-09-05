@@ -20,22 +20,31 @@ filename = "dataset/" + eq + "_2d_" + forcing + ".mat"
 # Loading the network data and computing the prediction
 settings.load_net()
 settings.init()
-u_train, u_test, f_train, f_test, fx = load_data(filename, settings.device, "2d")
-integral = predict_2d(f_test, fx)
 
+# Loading the network data and computing the prediction
+train_forcing = "gaus"
+eq            = "poisson"
+settings.load_net(train_forcing, eq)
+settings.init()
+
+forcings = ['sine', 'cheb', 'pwl', 'gaus']
+NMSE = np.zeros(4)
+NAVE = np.zeros(4)
 Nf = 40
-idx = 0
-pred = integral[:, idx].reshape(Nf, Nf).detach().numpy()
-true = u_test[:,idx].reshape(Nf, Nf).detach().numpy()
+i  = 0
+for forcing in forcings:
 
-fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(16,4))
-im1 = ax1.imshow(pred, extent=[0,1,0,1])
-ax1.set_title('Prediction')
-im2 = ax2.imshow(true, extent=[0,1,0,1])
-ax2.set_title('True solution')
-im3 = ax3.imshow(pred-true, extent=[0,1,0,1])
-ax3.set_title('Difference')
-plt.colorbar(im1,fraction=0.046, pad=0.04)
-plt.colorbar(im2,fraction=0.046, pad=0.04)
-plt.colorbar(im3,fraction=0.046, pad=0.04)
-plt.savefig('poisson2d.pdf', bbox_inches='tight')
+    # Getting the filename
+    filename = "dataset/" + eq + "_2d_" + forcing + ".mat"
+
+    u_train, u_test, f_train, f_test, fx = load_data(filename, settings.device, "2d")
+    integral = predict_2d(f_test, fx)
+
+    NMSEs   = torch.div(torch.sum((integral-u_test)**2, 0), torch.sum(u_test**2, 0))
+    NMSE[i] = NMSEs.mean().item()
+    NAVEs   = torch.div(torch.sum(torch.abs(integral-u_test), 0), torch.sum(torch.abs(u_test), 0))
+    NAVE[i] = NAVEs.mean().item()
+    i += 1
+
+np.savetxt('NAVE_' + train_forcing + '.txt', NAVE, fmt='%.2e')
+np.savetxt('NMSE_' + train_forcing + '.txt', NMSE, fmt='%.2e')
