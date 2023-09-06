@@ -4,11 +4,11 @@ function generate_example_2d(varargin)
     rng(1)
 
     % Choose equation from poisson or biharmonic
-    eq = "biharmonic";
+    eq = "poisson";
     % Choose forcing type from pwl (continuous piecewise-linear) sine
     % cheb (Chebyshev polynomials) or gaus (drawn from Gaussian process)
     forcing = "gaus";
-    points  = 20;
+    points  = 100;
 
     % Definition of a square domain [0, 1]^2
     dom  = [0 1];
@@ -43,14 +43,18 @@ function generate_example_2d(varargin)
             f_v = f(x, y);
 
         elseif forcing == "sine"
-            %f = rand_sin(dom);
-            f_v = rand_sin2(x, y);
+            f_v = rand_sin(x, y);
 
         elseif forcing == "cheb"
             f_v = rand_cheb(x, y);
 
         elseif forcing == "gaus"
-            f_v = rand_fun(dom, x, y);
+            domain_length = dom(2) - dom(1);
+            lambda = 0.03;
+            K = chebfun2(@(x,y)exp(-(x-y).^2/(2*domain_length^2*lambda^2)), [dom,dom]);
+            L = chol(K, 'lower');
+            f_v = rand_gaus(L, x, y);
+
         else
             msg = "Unknown forcing type";
             error(msg)
@@ -73,7 +77,7 @@ function generate_example_2d(varargin)
     % Add Gaussian noise to the training solution
     U = U.*(1 + noise_level*randn(size(U)));
 
-    save(sprintf(eq + '_2d_' + forcing + '.mat'), "fX", "U", "F", "U_hom")
+    save(sprintf(eq + '_2d_' + forcing + points + '.mat'), "fX", "U", "F", "U_hom")
 end
 
 function u = fd2d(n, f_v, dom, eq)
@@ -181,26 +185,7 @@ function pwlf = rand_pwl2d(n, dom)
     pwlf = griddedInterpolant(x,y,a);
 end
 
-
-function f = rand_sin(dom)
-    n_el = 10;
-    mu = 0;
-    sigma = 2;
-    w = normrnd(mu, sigma, 1, n_el);
-    %freq = datasample(1:n_el*3, n_el, 'Replace', false);
-    freq = 1:n_el;
-
-    f = chebfun2(@(x, y)0, dom, vectorise='true');
-    for i = 1:n_el
-        % Aligned frequencies
-        f = f + chebfun2(@(x, y)w(i)*sin(freq(i)*x)*sin(freq(i)*y), dom, vectorise='true');
-
-        % Offset frequencies
-        %f = f + chebfun2(@(x, y)w(i)*sin(freq(i)*x)*sin(freq(n_el-i+1)*y), dom, vectorise='true');
-    end
-end
-
-function z = rand_sin2(x, y)
+function z = rand_sin(x, y)
     n_el = 10;
     mu = 0;
     sigma = 2;
