@@ -14,3 +14,8 @@ def load_net(train_forcing, eq):
     if os.path.exists(u_file):
         global U_hom
         U_hom = torch.load(u_file, map_location='cpu')
+
+    h_file = "networks/" + eq + "/H_" + train_forcing + ".pkl"
+    if os.path.exists(h_file):
+        global H
+        H = torch.load(h_file, map_location='cpu')
