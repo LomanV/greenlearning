@@ -34,6 +34,21 @@ def load_data(filename, device, type):
     else:
         return
 
+def load_data_wave(filename, device):
+    data_idn = scipy.io.loadmat(filename)
+
+    u = torch.tensor(data_idn['U'], dtype=torch.float32)
+    f = torch.tensor(data_idn['F'], dtype=torch.float32)
+    g = torch.tensor(data_idn['G'], dtype=torch.float32)
+
+    u_train, u_test = u[:,0:100].to(device), u[:,100:200]
+    f_train, f_test = f[:,0:100].to(device), f[:,100:200]
+    g_train, g_test = g[:,0:100].to(device), g[:,100:200]
+
+    fx = torch.tensor(data_idn['fX'], dtype=torch.float32)
+    
+    return u_train, u_test, f_train, f_test, g_train, g_test, fx
+
 def init_weights(m):
     if isinstance(m, nn.Linear):
         torch.nn.init.xavier_uniform_(m.weight)
