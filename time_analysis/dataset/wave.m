@@ -1,72 +1,65 @@
 % This program describes a moving 1-D wave
 % using the finite difference method
-% It is based on the code from Praveen Ranganath : 
-% https://www.mathworks.com/matlabcentral/fileexchange/43001-1d-wave-propagation-a-finite-difference-approach
-
 clc
 close all;
 clear all;
-
+%-------------------------------------------------------------------------%
 % Initialization
 
 % Select forcing type and boundary condition type
 forcing  = 'pwl';  % choose from cheb sine pwl gaus
-boundary = 'space'; % either time or space for the boundary conditions
 
-Nx = 101;     
-dx = 1/(Nx-1);
+Nx = 101;       % x-Grids
+dx = 1/(Nx-1);         % Step size
 x(:,1) = (0:Nx-1)*dx;
 
 mpx = (Nx+1)/2; % Mid point of x axis
                 % ( Mid pt of 1 to 101 = 51 here )
                 
 T = 401;       % Total number of time steps
-dt = 0.001;
+
+dt = 0.001;     % Time-Step
 t(:,1)= (0:T-1)*dt;
+
+% forcing terms f and g must be evaluated in [-T, 1+T]
+% as motivated by d'Alembert formula
+y(:,1) = linspace(-max(t),1+max(t),Nx);
 
 v = 1;        % Wave velocity
 c = v*(dt/dx);  % CFL condition
 
-dom = [0,1];
+dom = [-max(t),1+max(t)];
 Nsample = 200;
 
-% Arrays to store the data
 U = zeros(101, 101, Nsample);
 F = zeros(101, Nsample);
+G = zeros(101, Nsample);
 
 for k=1:Nsample
-
     u = zeros(T,Nx);  % U(x,t) = U(space,time)
-
-    % Sample the random forcing that determines the boundary conditions
+    
+    % Sample forcing term
     if strcmp(forcing, 'pwl')
         f = rand_pwl(4, dom);
+        g = rand_pwl(4, dom);
     elseif strcmp(forcing, 'sine')
         f = rand_sine(dom);
+        g = rand_sine(dom);
     elseif strcmp(forcing, 'cheb')
         f = rand_cheb(dom);
+        g = rand_cheb(dom);
     elseif strcmp(forcing, 'gaus')
         f = rand_gaus(dom, 0.03);
+        g = rand_gaus(dom, 0.03);
     end
     
     % Initial condition
-    if strcmp(boundary, 'time')
-        u(:,1) = f(t);
-        u(:,2) = f(t);
-
-        % For filename
-        bd = '_t';
-        
-    elseif strcmp(boundary, 'space')
-        u(1, :) = f(x);
-        u(2, 1) = u(1, 1) - (1/2)*c*c*(u(1, 2)-2*u(1, 1));
-        u(2, end) = u(1, end) - (1/2)*c*c*(u(1, end-1)-2*u(1, end));
-        for j=3:Nx-1
-            u(2, j) = u(1, j) - (1/2)*c*c*(u(1, j+1)-2*u(1, j)+u(1, j-1));
-        end
-
-        % For filename
-        bd = '_x';
+    v = g(x); % Temporary vector
+    u(1, :) = f(x);
+    u(2, 1) = u(1, 1) - dt*v(1) - (1/2)*c*c*(u(1, 2)-2*u(1, 1));
+    u(2, end) = u(1, end) - dt*v(end) - (1/2)*c*c*(u(1, end-1)-2*u(1, end));
+    for j=3:Nx-1
+        u(2, j) = u(1, j) - dt*v(j) - (1/2)*c*c*(u(1, j+1)-2*u(1, j)+u(1, j-1));
     end
     
     % Finite Difference Scheme
@@ -80,25 +73,23 @@ for k=1:Nsample
     
     % We save the results
     u = downsample(u, 4);
+    
     U(:,:,k) = u;
+    F(:, k)  = f(y);
+    G(:, k)  = g(y);
 
-    if strcmp(boundary, 'time')
-        F(:,k) = u(:,1);
-    elseif strcmp(boundary, 'space')
-        F(:, k) = u(1, :);
-    end
 end
 
+%fX = downsample(x, 2);
 fX = x;
 U = reshape(U, 101*101, Nsample);
 
 % We write the .mat file
-save(sprintf("wave_" + forcing + bd + ".mat"),"U","F","fX")
+save(sprintf("wave_" + forcing + ".mat"),"U","F","G","fX")
 
 function pwlf = rand_pwl(n, dom)
-% Generates a continuous piecewise linear function of n pieces
-% with uniformly sampled nodes
-% with slope sampled from a Gaussian distribution
+% Generates a piecewise linear function of n pieces with continuous value 
+% and derivatives at the nodes where the slope changes
 
 % Define the range of the function as dom and sample n+1 points uniformly
 % in the domain
@@ -130,7 +121,7 @@ end
 
 
 function f = rand_sine(dom)
-    n_el = 5;
+    n_el = 10;
     mu = 0;
     sigma = 2;
     w = normrnd(mu, sigma, 1, n_el);
@@ -146,7 +137,7 @@ function f = rand_sine(dom)
 end
 
 function f = rand_cheb(dom)
-    n_el = 5;
+    n_el = 10;
     mu = 0;
     sigma = 2;
     w = normrnd(mu, sigma, 1, n_el);
